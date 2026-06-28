@@ -40,3 +40,62 @@ const extraLabels = {
   caramel: "Caramel Syrup",
   whipped: "Whipped Cream",
 };
+
+const cup = document.getElementById("cup");
+const summary = document.getElementById("summary");
+
+function updateCup() {
+  cup.style.setProperty("--fill-colour", drinkColours[order.drink]);
+  cup.style.setProperty("--fill-height", sizeHeight[order.size]);
+
+  ["extrashot", "vanilla", "caramel", "whipped"].forEach((extra) => {
+    document
+      .getElementById("badge-" + extra)
+      .classList.toggle("visible", order.extras.includes(extra));
+  });
+}
+
+function updateSummary() {
+  const cap = (s) => s[0].toUpperCase() + s.slice(1);
+  const milkLabel =
+    order.milk === "none" ? "No Milk" : cap(order.milk) + " Milk";
+
+  let total = prices[order.drink] + prices[order.size];
+  order.extras.forEach((e) => {
+    total += prices[e];
+  });
+
+
+  const extraRows = order.extras
+    .map(
+      (e) => `
+      <div class="summary-row">
+        <span>${extraLabels[e]}</span>
+        <span>+$${prices[e].toFixed(2)}</span>
+      </div>`,
+    )
+    .join("");
+
+  summary.innerHTML = `
+    <h3>Your Order</h3>
+    <div class="summary-row">
+      <span>${cap(order.drink)}</span>
+      <span>$${prices[order.drink].toFixed(2)}</span>
+    </div>
+    <div class="summary-row">
+      <span>${cap(order.size)}</span>
+      <span>${prices[order.size] > 0 ? "+$" + prices[order.size].toFixed(2) : "—"}</span>
+    </div>
+    <div class="summary-row">
+      <span>${milkLabel}</span>
+      <span>—</span>
+    </div>
+    ${extraRows}
+    <hr class="summary-divider" />
+    <div class="summary-total">
+      <span>Total</span>
+      <span>$${total.toFixed(2)}</span>
+    </div>
+  `;
+}
+
