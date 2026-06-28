@@ -99,3 +99,53 @@ function updateSummary() {
   `;
 }
 
+document.querySelectorAll('input[name="drink"]').forEach((input) => {
+  input.addEventListener("change", function () {
+    order.drink = this.value;
+    console.log(order);
+    updateCup();
+    updateSummary();
+  });
+});
+
+document.querySelectorAll('input[name="size"]').forEach((input) => {
+  input.addEventListener("change", function () {
+    order.size = this.value;
+    console.log(order);
+    updateCup();
+    updateSummary();
+  });
+});
+
+document.querySelectorAll('input[name="milk"]').forEach((input) => {
+  input.addEventListener("change", function () {
+    order.milk = this.value;
+    updateCup();
+    updateSummary();
+  });
+});
+
+document.querySelectorAll('input[name="extras"]').forEach((input) => {
+  input.addEventListener("change", function () {
+    if (this.checked) {
+      order.extras.push(this.value);
+    } else {
+      const i = order.extras.indexOf(this.value);
+      order.extras.splice(i, 1);
+    }
+    console.log(order);
+    updateCup();
+    updateSummary();
+  });
+});
+
+
+// document.querySelectorAll('input[name="drink"]').forEach((i) => i.checked = i.value === order.drink);
+// document.querySelectorAll('input[name="size"]').forEach((i) => i.checked = i.value === order.size);
+// document.querySelectorAll('input[name="milk"]').forEach((i) => i.checked = i.value === order.milk);
+// document.querySelectorAll('input[name="extras"]').forEach((i) => i.checked = false);
+
+
+updateCup();
+updateSummary();
+
