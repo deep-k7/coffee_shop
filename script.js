@@ -57,8 +57,7 @@ function updateCup() {
 
 function updateSummary() {
   const cap = (s) => s[0].toUpperCase() + s.slice(1);
-  const milkLabel =
-    order.milk === "none" ? "No Milk" : cap(order.milk) + " Milk";
+  const milkLabel = order.milk === "no milk" || order.milk === "none" ? "No Milk" : cap(order.milk) + " Milk";
 
   let total = prices[order.drink] + prices[order.size];
   order.extras.forEach((e) => {
@@ -99,18 +98,18 @@ function updateSummary() {
   `;
 }
 
-document.querySelectorAll('input[name="drink"]').forEach((input) => {
+document.querySelectorAll('input[name="coffee-type"]').forEach((input) => {
   input.addEventListener("change", function () {
-    order.drink = this.value;
+    order.drink = this.value.toLowerCase();
     console.log(order);
     updateCup();
     updateSummary();
   });
 });
 
-document.querySelectorAll('input[name="size"]').forEach((input) => {
+document.querySelectorAll('input[name="coffee-size"]').forEach((input) => {
   input.addEventListener("change", function () {
-    order.size = this.value;
+    order.size = this.value.toLowerCase();
     console.log(order);
     updateCup();
     updateSummary();
@@ -119,7 +118,8 @@ document.querySelectorAll('input[name="size"]').forEach((input) => {
 
 document.querySelectorAll('input[name="milk"]').forEach((input) => {
   input.addEventListener("change", function () {
-    order.milk = this.value;
+    const v = this.value.toLowerCase();
+    order.milk = v === 'no milk' ? 'no milk' : v;
     updateCup();
     updateSummary();
   });
@@ -127,11 +127,19 @@ document.querySelectorAll('input[name="milk"]').forEach((input) => {
 
 document.querySelectorAll('input[name="extras"]').forEach((input) => {
   input.addEventListener("change", function () {
+    const raw = this.value.toLowerCase();
+    const mapExtras = {
+      'extra shot': 'extrashot',
+      'vanilla syrup': 'vanilla',
+      'caramel syrup': 'caramel',
+      'whipped cream': 'whipped'
+    };
+    const key = mapExtras[raw] || raw.replace(/\s+/g, '');
     if (this.checked) {
-      order.extras.push(this.value);
+      order.extras.push(key);
     } else {
-      const i = order.extras.indexOf(this.value);
-      order.extras.splice(i, 1);
+      const i = order.extras.indexOf(key);
+      if (i > -1) order.extras.splice(i, 1);
     }
     console.log(order);
     updateCup();
